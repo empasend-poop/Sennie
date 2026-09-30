@@ -11,51 +11,30 @@ BASE = Path(__file__).resolve().parent
 EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.bmp'}
 st.set_page_config(page_title='우리 아이 성장앨범', page_icon='🩷', layout='wide')
 st.markdown('''<style>
-/* 메인 배경 */
-.stApp {
-    background: #F0F7FC;
-    color: #455566;
-}
 
-/* 왼쪽 사이드바 배경 */
-section[data-testid="stSidebar"] {
-    background: #F0F7FC;
-}
-.block-container {max-width:1200px;padding-top:2rem;padding-bottom:4rem}
-h1,h2,h3 {color:#56758b!important}
-.hero {background:#ffffffcc;border:1px solid #eee3d7;border-radius:24px;padding:28px;margin-bottom:20px}
-.kicker {color:#b47a7e;letter-spacing:3px;font-size:12px;font-weight:700}
-.hero h1 {margin:6px 0;font-size:36px}
-.event {border-left:4px solid #a6c6d8;background:#ffffffdd;padding:18px 24px;border-radius:0 18px 18px 0;margin:8px 0 22px}
-.event p {white-space:pre-wrap;color:#6b7785}
-[data-testid="stImage"] img {border-radius:16px}
-[data-testid="stMetric"] {background:#ffffffbb;border-radius:18px;padding:18px;border:1px solid #eee3d7}
-button {border-radius:14px!important}
-@media(max-width:640px){.hero h1{font-size:27px}.block-container{padding:1rem}}
-
-/* 메인과 사이드바 배경 */
+/* 메인과 사이드바 */
 .stApp,
 section[data-testid="stSidebar"] {
-    background: #bfeb8a !important;
+    background: #f8e5f2 !important;
     color: #2e4c6b;
 }
 
-/* 상단 앨범 제목 카드 */
+/* 상단 제목 카드 */
 .hero {
-    background: #bfeb8a !important;
-    border-color: #a7d572 !important;
+    background: #f8e5f2 !important;
+    border-color: #eca2d3 !important;
 }
 
 /* 이벤트 수 / 사진 수 카드 */
 [data-testid="stMetric"] {
-    background: #bfeb8a !important;
-    border-color: #a7d572 !important;
+    background: #f8e5f2 !important;
+    border-color: #eca2d3 !important;
 }
 
 /* Timeline 설명 카드 */
 .event {
-    background: #bfeb8a !important;
-    border-left-color: #ebb0e3 !important;
+    background: #f8e5f2 !important;
+    border-left-color: #eca2d3 !important;
 }
 
 /* 제목과 주요 숫자 */
@@ -65,7 +44,7 @@ h1, h2, h3,
     color: #2e4c6b !important;
 }
 
-/* 카드 안의 설명 */
+/* 카드 설명 */
 .hero p,
 .event p {
     color: #2e4c6b !important;
