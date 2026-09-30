@@ -214,8 +214,6 @@ with st.sidebar:
     )
     
 st.markdown(f'<div class="hero"><div class="kicker">OUR LITTLE STORY</div><h1>🧸 {escape(str(profile.get("name", "우리 아기")))}의 성장앨범</h1><p>{escape(str(profile.get("message", "매일매일 자라나는 소중한 순간들 ❤️")))}</p><span>{years[0]} — {years[-1]} · {escape(str(profile.get("nickname", "사랑둥이")))}</span></div>', unsafe_allow_html=True)
-with st.expander('🌷 앨범 표지', expanded=False):
-    show_image(local_image(str(profile.get('cover_image', 'images/profile/main.jpg'))))
 
 # 한국 시간: UTC + 9시간
 KST = timezone(timedelta(hours=9))
