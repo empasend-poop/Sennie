@@ -1,4 +1,6 @@
 """사진 폴더와 JSON으로 관리하는 우리 아이 성장앨범."""
+import base64
+from io import BytesIO
 from datetime import date, datetime, timedelta, timezone
 from html import escape
 import json
@@ -273,6 +275,257 @@ c.metric(
 )
 
 st.caption('샘플 이벤트는 실제 성장 기록에 맞게 수정해주세요. 사진 수는 Picture 폴더 기준입니다.')
+# ==================================================
+# 메인 화면: 우리 가족의 성장 타임라인
+# ==================================================
+
+st.markdown(
+    """
+    <style>
+    .family-timeline {
+        position: relative;
+        max-width: 950px;
+        margin: 25px auto 40px;
+        padding: 10px 0;
+    }
+
+    /* 가운데 세로선 */
+    .family-timeline::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 3px;
+        transform: translateX(-50%);
+        background: #eca2d3;
+        border-radius: 3px;
+    }
+
+    .family-row {
+        position: relative;
+        display: flex;
+        margin-bottom: 28px;
+    }
+
+    .family-row.left {
+        justify-content: flex-start;
+    }
+
+    .family-row.right {
+        justify-content: flex-end;
+    }
+
+    /* 세로선 위의 동그라미 */
+    .family-dot {
+        position: absolute;
+        left: 50%;
+        top: 24px;
+        width: 16px;
+        height: 16px;
+        transform: translateX(-50%);
+        background: var(--accent);
+        border: 4px solid #f8e5f2;
+        border-radius: 50%;
+        box-sizing: content-box;
+        z-index: 1;
+    }
+
+    .family-card {
+        position: relative;
+        width: 44%;
+        padding: 18px;
+        background: #f8e5f2;
+        border: 1px solid var(--accent);
+        border-radius: 18px;
+        box-sizing: border-box;
+    }
+
+    /* 카드와 중앙선을 연결 */
+    .family-card::after {
+        content: "";
+        position: absolute;
+        top: 35px;
+        width: 14%;
+        height: 2px;
+        background: var(--accent);
+    }
+
+    .family-row.left .family-card::after {
+        left: 100%;
+    }
+
+    .family-row.right .family-card::after {
+        right: 100%;
+    }
+
+    .family-year {
+        color: #2e4c6b;
+        font-size: 21px;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .family-photo {
+        display: block;
+        width: 100%;
+        max-width: 240px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 14px;
+        margin-bottom: 12px;
+    }
+
+    .family-placeholder {
+        padding: 30px 12px;
+        border: 1px dashed var(--accent);
+        border-radius: 14px;
+        color: #68788a;
+        text-align: center;
+        margin-bottom: 12px;
+    }
+
+    .family-title {
+        color: #2e4c6b;
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .family-description {
+        color: #52677b;
+        font-size: 14px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    /* 휴대폰에서는 한쪽으로 정렬 */
+    @media (max-width: 640px) {
+        .family-timeline::before {
+            left: 12px;
+        }
+
+        .family-row.left,
+        .family-row.right {
+            justify-content: flex-end;
+        }
+
+        .family-dot {
+            left: 12px;
+        }
+
+        .family-card {
+            width: calc(100% - 42px);
+        }
+
+        .family-row .family-card::after {
+            left: auto;
+            right: 100%;
+            width: 18px;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+def timeline_photo_html(event):
+    """대표 사진을 작은 이미지로 변환해 타임라인에 표시."""
+    values = event.get("images")
+
+    if not isinstance(values, list) or not values:
+        values = [event.get("image", "")]
+
+    path = local_image(values[0])
+
+    if path is None:
+        return (
+            '<div class="family-placeholder">'
+            '📷 추억의 사진을 넣어주세요'
+            '</div>'
+        )
+
+    try:
+        with Image.open(path) as source:
+            image = ImageOps.exif_transpose(source).convert("RGB")
+
+            image = ImageOps.fit(
+                image,
+                (480, 480),
+                method=Image.Resampling.LANCZOS,
+            )
+
+            buffer = BytesIO()
+            image.save(buffer, format="JPEG", quality=85)
+
+        encoded = base64.b64encode(
+            buffer.getvalue()
+        ).decode("ascii")
+
+        return (
+            '<img class="family-photo" '
+            f'src="data:image/jpeg;base64,{encoded}" '
+            'alt="우리 가족의 추억">'
+        )
+
+    except (OSError, ValueError, UnidentifiedImageError):
+        return (
+            '<div class="family-placeholder">'
+            '📷 사진을 확인해주세요'
+            '</div>'
+        )
+
+
+st.subheader("🩷 우리 가족의 이야기")
+st.caption("연애부터 결혼, 그리고 함께 자라는 소중한 시간")
+
+colors = [
+    "#c68aaa",
+    "#87adc4",
+    "#a1b780",
+    "#d4ad72",
+    "#aa95c4",
+]
+
+cards = []
+
+for index, year in enumerate(years):
+    # 날짜순으로 정렬된 첫 번째 이벤트 사용
+    year_events = events.get(year, [])
+    event = year_events[0] if year_events else {}
+
+    side = "left" if index % 2 == 0 else "right"
+    accent = colors[index % len(colors)]
+
+    label = escape(year_label(year))
+    title = escape(str(event.get("title", "우리의 소중한 추억")))
+    description = escape(
+        str(event.get("description", "이 해의 이야기를 기록해주세요."))
+    )
+
+    photo = timeline_photo_html(event)
+
+    cards.append(
+        f'<div class="family-row {side}" '
+        f'style="--accent:{accent};">'
+        '<div class="family-dot"></div>'
+        '<div class="family-card">'
+        f'<div class="family-year">{label}</div>'
+        f'{photo}'
+        f'<div class="family-title">{title}</div>'
+        f'<div class="family-description">{description}</div>'
+        '</div>'
+        '</div>'
+    )
+
+st.markdown(
+    '<div class="family-timeline">'
+    + "".join(cards)
+    + "</div>",
+    unsafe_allow_html=True,
+)
 
 timeline_tab, picture_tab = st.tabs(['🌱 Timeline', '📸 Picture'])
 with timeline_tab:
