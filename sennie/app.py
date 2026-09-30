@@ -9,7 +9,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 
 BASE = Path(__file__).resolve().parent
 EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.bmp'}
-st.set_page_config(page_title='우리 아이 성장앨범', page_icon='🧸', layout='wide')
+st.set_page_config(page_title='Sennie 성장앨범', page_icon='🧸', layout='wide')
 st.markdown('''<style>
 .stApp {background:linear-gradient(135deg,#fffaf2,#f3f8fc);color:#455566}
 .block-container {max-width:1200px;padding-top:2rem;padding-bottom:4rem}
