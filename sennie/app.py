@@ -80,18 +80,29 @@ def pictures(year):
 
 def show_image(path, thumbnail=False):
     if path is None:
-        st.info('📷 여기에 소중한 사진을 넣어주세요.')
+        st.info("📷 여기에 소중한 사진을 넣어주세요.")
         return
+
     try:
         with Image.open(path) as source:
-            image = ImageOps.exif_transpose(source).convert('RGB')
-            if thumbnail:
-                image = ImageOps.fit(image, (720, 720), method=Image.Resampling.LANCZOS)
-            else:
-                image.thumbnail((1600, 1600))
-            st.image(image, width='stretch')
+            image = ImageOps.exif_transpose(source).convert("RGB")
+
+            # 모든 사진을 동일한 정사각형으로 맞추기
+            image = ImageOps.fit(
+                image,
+                (200, 200),
+                method=Image.Resampling.LANCZOS,
+                centering=(0.5, 0.5),
+            )
+
+            # 컬럼 너비보다 커지지 않도록 표시
+            st.image(image, width=300)
+
     except (OSError, ValueError, UnidentifiedImageError):
-        st.warning(f'{path.name}: 사진을 읽을 수 없습니다. JPG 또는 PNG로 다시 저장해주세요.')
+        st.warning(
+            f"{path.name}: 사진을 읽을 수 없습니다. "
+            "JPG 또는 PNG로 다시 저장해주세요."
+        )
 
 
 profile = read_object('profile.json', {})
