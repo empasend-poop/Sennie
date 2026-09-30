@@ -100,7 +100,7 @@ with st.sidebar:
         st.rerun()
     st.caption('사진이나 JSON 수정 후 이 버튼을 누르면 다시 읽습니다.')
 
-st.markdown(f'<div class="hero"><div class="kicker">OUR LITTLE STORY</div><h1>🧸 {escape(str(profile.get("name", "우리 아기")))}의 성장앨범</h1><p>{escape(str(profile.get("message", "매일매일 자라나는 소중한 순간들 ❤️")))}</p><span>{years[0]} — {years[-1]} · {escape(str(profile.get("nickname", "사랑둥이")))}</span></div>', unsafe_allow_html=True)
+st.markdown(f'<div class="hero"><div class="kicker">OUR LITTLE STORY</div><h1>🧸 {escape(str(profile.get("name", "우리 아기")))}의 성장앨범</h1><p>{escape(str(profile.get("message", "매일매일 자라나는 소중한 순간들 ❤️")))}</p><span>{years[0]} — {years[-1]} · {escape(str(profile.get("nickname", "")))}</span></div>', unsafe_allow_html=True)
 with st.expander('🌷 앨범 표지', expanded=False):
     show_image(local_image(str(profile.get('cover_image', 'images/profile/main.jpg'))))
 a, b, c = st.columns(3)
