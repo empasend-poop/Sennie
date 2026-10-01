@@ -87,8 +87,11 @@ def run_import(base):
                             result = caption(draft['bytes'], api_key, model, context)
                         st.session_state[f'draft_title_{key}'] = result['title']
                         st.session_state[f'draft_description_{key}'] = result['description']
-                    except (ServiceError, requests.RequestException):
-                        st.error('AI 요청에 실패했습니다. API 키·결제·모델·사용량을 확인해주세요. 문구를 직접 작성해도 됩니다.')
+                     except ServiceError as exc:
+                        st.error(f"AI 요청 실패: {exc}")
+                     except requests.RequestException:
+                        st.error("Gemini 연결에 실패했습니다. 잠시 후 다시 시도해주세요.")
+                      
                 title = st.text_input('제목', value='소중한 하루 🩷', key=f'draft_title_{key}', max_chars=120)
                 description = st.text_area('설명 (AI 문구를 자유롭게 고쳐주세요)', key=f'draft_description_{key}', max_chars=4000)
                 timeline = st.checkbox('Timeline에도 함께 등록', value=True, key=f'draft_timeline_{key}')
