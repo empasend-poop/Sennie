@@ -13,7 +13,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 
 BASE = Path(__file__).resolve().parent
 EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.bmp'}
-st.set_page_config(page_title='우리 아이 성장앨범', page_icon='🩷', layout='wide')
+st.set_page_config(page_title='Sennie family', page_icon='🩷', layout='wide')
 # Google 로그인 완료 탭: 원래 탭으로 주소를 전달합니다.
 if 'code' in st.query_params or 'error' in st.query_params:
     st.title('Google 로그인 응답')
@@ -27,13 +27,13 @@ except (FileNotFoundError, st.errors.StreamlitSecretNotFoundError):
     view_password = ''
 
 if not view_password:
-    st.title('🩷 성장앨범')
+    st.title('🩷 가족앨범')
     st.info('앨범 비밀번호 설정이 필요합니다. 운영자는 Streamlit Secrets에 ALBUM_VIEW_PASSWORD를 추가해주세요.')
     st.stop()
 
 password_version = hashlib.sha256(view_password.encode()).hexdigest()
 if not hmac.compare_digest(str(st.session_state.get('album_view_auth', '')), password_version):
-    st.title('🩷 우리 가족 성장앨범')
+    st.title('🩷 가족앨범')
     st.caption('앨범 비밀번호를 입력하면 사진과 추억을 볼 수 있어요.')
 
     def check_album_password():
