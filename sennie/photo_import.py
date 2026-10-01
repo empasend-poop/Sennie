@@ -78,18 +78,28 @@ def run_import(base):
                 paid = setting('GEMINI_PAID_SERVICE', False) is True
                 if not api_key or not paid:
                     st.caption('AI 문구 기능: 유료 Gemini API와 GEMINI_PAID_SERVICE = true 설정이 필요합니다. 직접 작성은 가능합니다.')
-                if st.button('✨ 이 사진의 문구 자동 생성', key=f'draft_ai_{key}', disabled=not(consent and api_key and paid)):
+                                if st.button('✨ 이 사진의 문구 자동 생성', key=f'draft_ai_{key}', disabled=not(consent and api_key and paid)):
                     try:
                         model = str(setting('GEMINI_MODEL', 'gemini-2.5-flash'))
+
                         if not re.fullmatch(r'[A-Za-z0-9._-]+', model):
                             raise ServiceError('GEMINI_MODEL 설정을 확인해주세요.')
+
                         with st.spinner('사진을 보고 문구를 작성하고 있어요…'):
-                            result = caption(draft['bytes'], api_key, model, context)
+                            result = caption(
+                                draft['bytes'],
+                                api_key,
+                                model,
+                                context,
+                            )
+
                         st.session_state[f'draft_title_{key}'] = result['title']
                         st.session_state[f'draft_description_{key}'] = result['description']
-                     except ServiceError as exc:
+
+                    except ServiceError as exc:
                         st.error(f"AI 요청 실패: {exc}")
-                     except requests.RequestException:
+
+                    except requests.RequestException:
                         st.error("Gemini 연결에 실패했습니다. 잠시 후 다시 시도해주세요.")
                       
                 title = st.text_input('제목', value='소중한 하루 🩷', key=f'draft_title_{key}', max_chars=120)
