@@ -11,7 +11,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 
 BASE = Path(__file__).resolve().parent
 EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.bmp'}
-st.set_page_config(page_title='우리 아이 성장앨범', page_icon='🩷', layout='wide')
+st.set_page_config(page_title='Sennie 가족앨범', page_icon='🩷', layout='wide')
 # Google 로그인 완료 탭: 원래 탭으로 주소를 전달합니다.
 if 'code' in st.query_params or 'error' in st.query_params:
     st.title('Google 로그인 응답')
