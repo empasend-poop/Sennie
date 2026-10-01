@@ -284,7 +284,7 @@ def show_growth_clock():
     st.markdown(
         f"""
         <div style="
-            font-size: clamp(16px, 2vw, 26px);
+            font-size: clamp(14px, 1.3vw, 20px);
             font-weight: 700;
             color: #455566;
             white-space: nowrap;
@@ -464,6 +464,11 @@ st.markdown(
             width: 18px;
         }
     }
+    /* 이벤트·사진 숫자 크기 맞추기 */
+[data-testid="stMetricValue"] {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
     </style>
     """,
     unsafe_allow_html=True,
